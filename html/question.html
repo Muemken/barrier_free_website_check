@@ -1,0 +1,36 @@
+<div class="row">
+    <!-- first div is a space holder to the left side -->
+    <div class="col-1"> </div>
+    <!-- 10 rows to get content -->
+    <div class="col-6 dropdown testimg">
+        <img src="%picture%" alt="%alt_text%">
+        <div class="dropdown-content">
+            Entspricht das Bild dem rechts angegebenen Text?
+        </div>
+    </div>
+    <div class="col-2 dropdown space">
+        <div class="big">
+            %description%
+        </div>
+        <div class="dropdown-content">
+            Entspricht die Beschreibung dem links gezeigtem Bild?
+        </div>
+    </div>
+    <div class="col-2 big">
+        <form action="index.php?site=test&it=%it%" method="post">
+        <input type="hidden" name="url" value="%url%" />
+        <input type="hidden" name="results" value="%results%" />
+        
+            <dl>
+                <dt><input id ='yes' name='ans' type='submit' value='yes'></dt>
+                <dt><input id ='no' name='ans' type='submit' value='no'></dt>
+                <dt>
+                    <input id ='back' name='ans' type='submit' value='back'>
+                    <input id ='for' name='ans' type='submit' value='forward'>
+                </dt>
+            </dl>
+        </form>
+    </div>
+</div>
+
+
