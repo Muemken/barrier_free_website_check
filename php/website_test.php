@@ -81,12 +81,15 @@ class website_test {
         // PREG_SET_ORDER -> all matches for one occurence per array
         // because of that we can (as long as no cookies should be used, access directly
         // and havent got to go the way [store in array, choose, send]
-        $regex = '/<img(.*)>/';
+        $regex = '<img(.*)>';
         preg_match_all($regex, $site_content, $match, PREG_SET_ORDER);
+//        $tag = $this->find_tag_in_string($site_content, 'img', array('<'), array('>'));
 
+//        var_dump($match);
         $it = 0;
         $notag = 0;
         $invalid = 0;
+//        while ($tag != NULL){
         foreach ($match as $var) {
             $src = $this->find_tag($var, 'src');
             // if there is not src in that line, we can ignore (can happen, if the regex does not fit very well.
@@ -113,6 +116,7 @@ class website_test {
             $this->pictures[$it]['url'] = $absolute_path;
             $this->pictures[$it]['alt'] = $alt;
             $it++;
+//            $tag = $this->find_tag_in_string($site_content, 'img', array('<'), array('>'));
         }
         $this->results = $this->results.'n:'.$notag.'i:'.$invalid;
     }
@@ -122,28 +126,14 @@ class website_test {
         // path has to be relativ to url, or absolute
         // regex taken from stackoverflow:
         // https://stackoverflow.com/questions/20015453/php-regex-preg-match-on-a-variable-containing-a-url
-        if (preg_match('~' . preg_quote($url, '~') . '~A', $path) > 0) {
+//        if (preg_match('~' . preg_quote($url, '~') . '~A', $path) > 0) {
+//            return $path;
+//        }
+//        return $url . '/' . $path;
+        if(substr($path, 0,4) == "www." || substr($path, 0,4) == "http") {
             return $path;
         }
         return $url . '/' . $path;
-    }
-
-    function find_tag($value, $tag) {
-// More nicely (and faster) use regex. But as this will not work for any reason, i wrote 'find_tag_in_string'
-//        $regex = '/src\s*=\s*("|')([^("|').]*)("|')((\s+\w*)|\s*>)/';
-//        preg_match_all($regex, $value, $match, PREG_PATTERN_ORDER);
-        if (is_string($value)) {
-            return $this->find_tag_in_string($value, $tag);
-        }
-        if (is_array($value)) {
-            foreach ($value as $var) {
-                $result = $this->find_tag_in_string($var, $tag);
-                if ($result != NULL) {
-                    return $result;
-                }
-            }
-        }
-        return NULL;
     }
 
     /**
@@ -156,20 +146,39 @@ class website_test {
         return TRUE;
     }
 
-    function find_tag_in_string($string, $tag) {
+    function find_tag($value, $tag) {
+// More nicely (and faster) use regex. But as this will not work for any reason, i wrote 'find_tag_in_string'
+//        $regex = '/src\s*=\s*("|')([^("|').]*)("|')((\s+\w*)|\s*>)/';
+//        preg_match_all($regex, $value, $match, PREG_PATTERN_ORDER);
+        if (is_string($value)) {
+            return $this->find_tag_in_string($value, $tag);
+        }
+        if (is_array($value)) {
+            foreach ($value as $var) {
+                $result = $this->find_tag_in_string($var, $tag, array('"',"'"), array('"',"'"));
+                if ($result != NULL) {
+                    return $result;
+                }
+            }
+        }
+        return NULL;
+    }
+
+    function find_tag_in_string($string, $tag, $quote, $quote2) {
         $index = strpos($string, $tag);
         if ($index == FALSE) {
             return NULL;
         }
 
-        $quote = "'";
-        $start = strpos($string, $quote, $index);
-        if ($start == FALSE) {
-            $quote = '"';
-            $start = strpos($string, $quote, $index);
+        $found_index = array(NULL, NULL);
+        $start = FALSE;
+        for ($i = 0; $i < count($quote); $i++) {
+            $start = strpos($string, $quote[$i], $index-1);
+            $found_index[$i] = $start;
         }
-
-        $end = strpos($string, $quote, $start + 1);
+        $min_index = array_search(min($found_index), $found_index);
+        
+        $end = strpos($string, $quote2[$min_index], $start + 1);
         if ($end == FALSE) {
             return NULL;
         }
