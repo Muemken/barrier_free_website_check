@@ -117,12 +117,14 @@ class website_test {
         $this->results = $this->results.'n:'.$notag.'i:'.$invalid;
     }
 
+    /**
+     * 
+     * @param type $url
+     * @param type $path
+     * @return type
+     */
     function absolut_path($url, $path) {
-        // alternative ask starts with http, but i think this way is better, since the 
-        // path has to be relativ to url, or absolute
-        // regex taken from stackoverflow:
-        // https://stackoverflow.com/questions/20015453/php-regex-preg-match-on-a-variable-containing-a-url
-        if (preg_match('~' . preg_quote($url, '~') . '~A', $path) > 0) {
+        if (substr($path, 0, 4) == "www." || substr($path, 0, 4) == "http") {
             return $path;
         }
         return $url . '/' . $path;
