@@ -1,6 +1,7 @@
 <?php
 
 include_once 'evaluation.php';
+
 /**
  * testclass
  *
@@ -29,7 +30,7 @@ class website_test {
                 $it = 0;
             }
             $this->read_site();
-            $this->fill_result($ans, $it-1);
+            $this->fill_result($ans, $it - 1);
 
             // can be done directly in read site, as long as we do not use cookies. Check timing if this maybe better
             $this->check_picture($it);
@@ -44,7 +45,7 @@ class website_test {
             $this->results = $results;
         }
 
-        if(NULL == $ans || $it < 0) { // in the beginning
+        if (NULL == $ans || $it < 0) { // in the beginning
             return;
         }
 
@@ -66,7 +67,7 @@ class website_test {
         // maybe better use something like enum or global static array for that
         // this is also better, if one time the language should be switchable ;)
         if ('back' == $ans) {
-            return $it == 0? $it:--$it;
+            return $it == 0 ? $it :  --$it;
         }
         return ++$it;
     }
@@ -74,7 +75,6 @@ class website_test {
     function read_site() {
         $site_content = $this->content_of_url();
         $this->results = ""; // will be overwritten later from set results
-
 //        if ('404' == $site_content) {
 //            echo 'fail: cannot open url ' . $this->url;
 //        }
@@ -103,18 +103,21 @@ class website_test {
 
             //TODO: test if this is a callable picture! -> invalid++ -> continue; 
             $absolute_path = $this->absolut_path($this->url, $src);
-            if( !$this->is_path_valid($absolute_path) ){
+            if (!$this->is_path_valid($absolute_path)) {
                 $invalid++;
                 continue;
             }
 
-            $this->results = $this->results.'.';
+            $this->results = $this->results . '.';
 
             $this->pictures[$it]['url'] = $absolute_path;
             $this->pictures[$it]['alt'] = $alt;
             $it++;
         }
-        $this->results = $this->results.'n:'.$notag.'i:'.$invalid;
+        if (count($this->pictures) == 0) {
+            echo 'Keine Bilder gefunden!';
+        }
+        $this->results = $this->results . 'n:' . $notag . 'i:' . $invalid;
     }
 
     /**
@@ -239,4 +242,5 @@ class website_test {
         curl_close($ch);
         return $response;
     }
+
 }
