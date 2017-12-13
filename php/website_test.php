@@ -49,11 +49,11 @@ class website_test {
             return;
         }
 
-        if ('yes' == $ans) {
+        if ('ja' == $ans) {
             $this->results[$it] = '+';
-        } else if ('no' == $ans) {
+        } else if ('nein' == $ans) {
             $this->results[$it] = '-';
-        } else if ('back' == $ans || 'forward' == $ans) {
+        } else if ('zurück' == $ans || 'weiter' == $ans) {
             if ('+' == $this->results[$it] || '-' == $this->results[$it]) {
                 return;
             }
@@ -66,7 +66,7 @@ class website_test {
         // TODO, this has to be adapted if the form (html) changes. -> big crab.
         // maybe better use something like enum or global static array for that
         // this is also better, if one time the language should be switchable ;)
-        if ('back' == $ans) {
+        if ('zurück' == $ans) {
             return $it == 0 ? $it :  --$it;
         }
         return ++$it;
