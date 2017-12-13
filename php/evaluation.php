@@ -18,7 +18,7 @@ class evaluation {
 
     function show_result() {
         $evaluation = file_get_contents('html/evaluation.html', TRUE);
-        $pattern = array('%length%','%yes%', '%no%', '%invalid%', '%notag%', '%skip%', '%result%');
+        $pattern = array('%length%','%yes%', '%yes_p%','%no%', '%no_p%', '%invalid%', '%invalid_p%', '%notag%', '%notag_p%','%skip%','%skip_p%' ,'%result%');
 
         $result_array = $this->read_results();
         $result = 'Die Website ist ' . ($result_array[0] > 70 ? '' : 'nicht ') . ' barrierefrei!';
@@ -36,6 +36,8 @@ class evaluation {
         $yes = 0;        
         $no = 0;
         $skip = 0;
+        
+      
 
         for ($i = 0; $i < strlen($result); ++$i) {
             if ($result[$i] == '+') {
@@ -49,10 +51,17 @@ class evaluation {
         $length = intval(strlen($result) + $invalid + $notag);
 
         if ($length == 0) {
-            return array(0, 0, 0, 0, 0, 0);
+            return array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
-        return array($length, $yes = $yes / $length * 100 , $no / $length * 100, $invalid / $length * 100,
-            $notag / $length * 100, $skip / $length * 100);
+        
+        $yes_p = $yes / $length * 100; 
+        $no_p = $no / $length * 100;
+        $skip_p = $skip / $length * 100;
+        $invalid_p = $invalid / $length * 100;
+        $notag_p = $notag / $length * 100;
+        
+        return array($length, $yes, $yes_p, $no, $no_p, $invalid, $invalid_p,
+            $notag, $notag_p, $skip, $skip_p);
     }
 
 }
