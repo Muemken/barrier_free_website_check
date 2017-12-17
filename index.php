@@ -29,6 +29,31 @@ if (NULL != filter_input(INPUT_GET, 'site', FILTER_SANITIZE_STRING)) {
     include_once "html/home.html";
 }
 
+
+$action = filter_input(INPUT_GET, 'action');
+switch ($action) {
+    case 'yes_list':
+        include "html/evaluation_list.html";
+        echo "yes_list";
+        break;
+    case 'no_list':
+        include "html/evaluation_list.html";
+        echo "no_list";
+        break;
+    case 'skip_list':
+        include "html/evaluation_list.html";
+        echo "skip_list";
+        break;
+    case 'notag_list':
+        include "html/evaluation_list.html";
+        echo "notag_list";
+        break;
+    case 'invalid_list':
+        include "html/evaluation_list.html";
+        echo "invalid_list";
+        break;
+}
+
 include_once "html/footer.html";
 echo '</body>';
 echo '</html>';
