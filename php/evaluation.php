@@ -21,7 +21,8 @@ class evaluation {
         $evaluation = file_get_contents('html/evaluation.html', TRUE);
 
         $pattern = array('%length%','%yes%', '%yes_p%','%no%', '%no_p%', '%invalid%', 
-            '%invalid_p%', '%notag%', '%notag_p%','%skip%','%skip_p%' ,'%result%');
+            '%invalid_p%', '%notag%', '%notag_p%','%skip%','%skip_p%',
+            '%yes_s%', '%no_s%', '%invalid_s%', '%notag_s%', '%skip_s%','%result%');
 
         $result_array = $this->read_results();
         $result = 'Die Website ist ' . ($result_array[0] > 70 ? '' : 'nicht ') . ' barrierefrei!';
@@ -61,7 +62,9 @@ class evaluation {
         $notag_p = $notag / $length * 100;
         
         return array($length, $yes, $yes_p, $no, $no_p, $invalid, $invalid_p,
-            $notag, $notag_p, $skip, $skip_p);
+            $notag, $notag_p, $skip, $skip_p,
+            min($yes_p + 15, 100), min($no_p + 15, 100), min($invalid_p + 15, 100),
+            min($notag_p + 15, 100), min($skip_p + 15, 100));
 
     }
 
