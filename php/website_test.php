@@ -1,5 +1,5 @@
 <?php
-
+set_time_limit(0);
 include_once 'evaluation.php';
 
 /**
@@ -150,14 +150,24 @@ class website_test {
             $merged = array_unique($array1);
         }
 
-        return array_values($merged);
+        return $merged;
     }
 
-    public function read_site() {
+    public function read_site($rek_deep = 1) {
         $urls = array($this->url);
         $it = 0;
-        while ($it < count($urls)) {
-            $urls = $this->merge_arrays($urls, $this->get_links($urls[$it++]));
+        $end_run = 0;
+        $loop_conter = 0; // TODO
+        while ($it <= $end_run) {
+            if(array_key_exists($it, $urls)) {
+                $urls = $this->merge_arrays($urls, $this->get_links($urls[$it]));
+            }
+            if($it == $end_run && $loop_conter < $rek_deep) {
+                $end_run = max(array_keys($urls));
+                $loop_conter++;
+            }
+
+            $it++;
         }
 
         $pictures = array();
@@ -272,7 +282,7 @@ class website_test {
      * opens an url and check if this url is valid
      * @return type http code of response. (200-> o.k >400: failure)
      */
-    public function content_of_url($url = NULl) {
+    public function content_of_url($url = NULL) {
         if ($url == NULL) {
             $url = $this->url;
         }
@@ -284,7 +294,9 @@ class website_test {
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0); // no ssl needed
         curl_setopt($ch, CURLOPT_FAILONERROR, 0); // fail directly if error
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); // do not print the exec directly
-        curl_setopt($ch, CURLOPT_URL, $this->url);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_URL, $url);
 
 //        $site_content = '404';
 //        if (curl_getinfo($ch, CURLINFO_HTTP_CODE)) {

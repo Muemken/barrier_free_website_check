@@ -20,8 +20,8 @@ class evaluation {
     function show_result() {
         $evaluation = file_get_contents('html/evaluation.html', TRUE);
 
-        $pattern = array('%length%', '%yes%', '%yes_p%', '%no%', '%no_p%', '%invalid%',
-            '%invalid_p%', '%notag%', '%notag_p%', '%skip%', '%skip_p%',
+        $pattern = array('%length%', '%yes%', '%no%', '%invalid%', '%notag%', '%skip%', 
+            '%yes_p%','%no_p%', '%invalid_p%', '%notag_p%', '%skip_p%',            
             '%yes_s%', '%no_s%', '%invalid_s%', '%notag_s%', '%skip_s%',
             '%result%', '%hidden%', '%pictures_list%');
 
@@ -55,7 +55,7 @@ class evaluation {
                 $results = $this->db->results_for_bar('');
                 break;
             case 'invalid_list':
-                $results = $this->db->results_for_bar('');
+                $results = $this->db->results_for_bar('Kein Bild');
                 break;
         }
 
@@ -83,22 +83,23 @@ class evaluation {
                 $no++;
             } else if ('skipped' == $res['result']) {
                 $skip++;
-            } else if ('no_picture' == $res['result']) {
+            } else if ('Kein Bild' == $res['result']) {
                 $invalid++;
             } else if ('' == $res['alt']) {
                 $notag++; // here we can have duplicates, because this is not skipped for evaluation yet.
             }
         }
-        $length = count($this->result) - $skip;
+        //$length = count($this->result) - $skip;  ///warum?
+        $length = count($this->result);
 
-        $yes_p = $yes / $length * 100;
-        $no_p = $no / $length * 100;
-        $skip_p = $skip / $length * 100;
-        $invalid_p = $invalid / $length * 100;
-        $notag_p = $notag / $length * 100;
+        $yes_p = round($yes / $length * 100, 2);
+        $no_p = round($no / $length * 100, 2);
+        $skip_p = round($skip / $length * 100, 2);
+        $invalid_p = round($invalid / $length * 100, 2);
+        $notag_p = round($notag / $length * 100, 2);
 
-        return array($length, $yes, $yes_p, $no, $no_p, $invalid, $invalid_p,
-            $notag, $notag_p, $skip, $skip_p,
+        return array($length, $yes, $no, $invalid, $notag, $skip,
+            $yes_p, $no_p, $invalid_p, $notag_p, $skip_p,
             min($yes_p + 15, 100), min($no_p + 15, 100), min($invalid_p + 15, 100),
             min($notag_p + 15, 100), min($skip_p + 15, 100));
     }

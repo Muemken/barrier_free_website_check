@@ -1,5 +1,6 @@
 <?php
 session_start();
+ini_set('max_execution_time', 60);
 error_reporting(E_ALL);
 
 echo '<html lang="de">';
