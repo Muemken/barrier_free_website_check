@@ -122,6 +122,26 @@ class db {
         }
     }
 
+    public function results_for_bar($bar) {
+        try {
+            $statement = $this->db->prepare("SELECT * FROM `pictures` WHERE `result` LIKE ?");
+            if (!$statement->execute(array($bar))) {
+                if ($this->print_failure)
+                    echo "<br>SQL Error <br />";
+                return NULL;
+            }
+
+            $result = array();
+            while ($row = $statement->fetch()) {
+                array_push($result, $row);
+            }
+            return $result;
+        } catch (Exception $ex) {
+            if ($this->print_failure)
+                echo 'login failed: ' . $ex->getMessage();
+        }
+    }
+
     public function add_urls_to_db($url) {
         try {
             $this->db->beginTransaction();

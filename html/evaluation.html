@@ -3,7 +3,7 @@
     <div class="col-1"> </div>
     <!-- 10 rows to get content -->
     <!--<form action = "php/listview.php" method = "post" />-->
-    <form>
+    <form action="index.php?site=evaluation" method = "post" >
     <div class="col-10 w3-container">
    
         <div class="w3-light-grey">
@@ -29,13 +29,17 @@
 
         <!--<h2> Auf der Webseite wurden insgesamt %length% Bilder gefunden! </h2> -->
         <h2>%result%</h2>
-        
+
+        <div class="%hidden%hidden_div">
+            %pictures_list%
+        </div>
+
     </div>
     </form>
 
-    <div id="box" style="display: none;>
+<!--    <div id="box" style="display: none;>
         <img src="pictures/piksl_200.png" alt="Piksl-Logo">
-    </div>
+    </div>-->
 
     <!-- one row left, but this has not esplicity set -->
 </div>
