@@ -6,7 +6,6 @@ error_reporting(E_ALL);
 echo '<html lang="de">';
 include_once "html/head.html";
 echo '<body>';
-include_once "html/header.html";
 
 
 /**
@@ -25,10 +24,16 @@ $sh = new session_handler();
 
 $db = new db($sh, true);
 $db->db_connect();
+$auth = new auth($sh, $db);
 
-if (!$sh->logged_in()) {
-    $auth = new auth($sh, $db);
-}
+
+include_once "html/header.html";
+$auth->decide();
+//$header = file_get_contents('html/header.html', TRUE);
+//$pattern = array('%login%');
+//$result_array = array($auth->decide_str());
+//echo str_replace($pattern, $result_array, $header);
+
 
 
 if (NULL != filter_input(INPUT_GET, 'site', FILTER_SANITIZE_STRING)) {

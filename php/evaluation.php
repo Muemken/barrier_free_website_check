@@ -26,7 +26,7 @@ class evaluation {
             '%result%', '%hidden%', '%pictures_list%');
 
         $result_array = $this->read_results();
-        $result = 'Die Website ist ' . ($result_array[0] > 70 ? '' : 'nicht ') . ' barrierefrei!';
+        $result = 'Die Website ist ' . ($result_array[6] > 70 ? '' : 'nicht ') . ' barrierefrei!';
 
         array_push($result_array, $result);
 

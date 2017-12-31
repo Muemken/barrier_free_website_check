@@ -12,16 +12,35 @@ class auth {
     public function __construct($sh, $db) {
         $this->db = $db;
         $this->session_handler = $sh;
-        $uname = filter_input(INPUT_POST, 'uname', FILTER_SANITIZE_STRING);
-        $pwd = filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_STRING);
-        if(NULL != $uname && NULL != $pwd ) {
-            $this->login($uname, $pwd);
+    }
+
+    public function decide() {
+        if( !$this->session_handler->logged_in() ) {
+            echo $this->login();
         } else {
-            echo file_get_contents('html/form_login.html', TRUE);
+            echo $this->logout();
         }
     }
 
-    public function login($uname, $pwd) {
+    public function decide_str() {
+        if( !$this->session_handler->logged_in() ) {
+            return $this->login();
+        } else {
+            return $this->logout();
+        }
+    }
+
+    public function login() {
+        $uname = filter_input(INPUT_POST, 'uname', FILTER_SANITIZE_STRING);
+        $pwd = filter_input(INPUT_POST, 'pwd', FILTER_SANITIZE_STRING);
+        if(NULL != $uname && NULL != $pwd ) {
+            $this->login_user($uname, $pwd);
+        } else {
+            return file_get_contents('html/form_login.html', TRUE);
+        }
+    }
+
+    public function login_user($uname, $pwd) {
         $verified = $this->db->db_login($uname, $pwd);
         echo $verified;
         if($verified) {
@@ -33,7 +52,11 @@ class auth {
     }
 
     public function logout() {
-        $this->session_handler->free();
+        if( True == filter_input(INPUT_POST, 'logout', FILTER_SANITIZE_STRING) ) {
+            $this->session_handler->free();
+        } else {
+            return file_get_contents('html/form_logout.html', TRUE);
+        }
     }
 }
 ?>
