@@ -41,7 +41,7 @@ class website_test {
                 $this->read_site();
             }
 
-            if ($this->sh->get_state() == 'testside') {
+            if ($this->sh->get_state() == 'testside') {   
                 $this->fill_result($ans, $it - 1); // more store result in DB
                 $this->check_picture($it);
             }
@@ -72,7 +72,8 @@ class website_test {
         // maybe better use something like enum or global static array for that
         // this is also better, if one time the language should be switchable ;)
         if ('back' == $ans) {
-            return $it == 0 ? $it : --$it;
+            // verringere iterator, falls nicht beim ersten Element 
+            return $it == 0 ? $it : --$it;            
         }
         return ++$it;
     }
@@ -85,7 +86,8 @@ class website_test {
             return $result_urls;
         }
 
-        $regex = '/<a(.*)>/';
+        $regex = '/<a(.*)>/';           // TODO find better regex
+        // warum nicht '/<a href="   ????
         $match = NULL;
         preg_match_all($regex, $site_content, $match, PREG_SET_ORDER);
         foreach ($match as $var) {
@@ -94,12 +96,13 @@ class website_test {
                 continue;
             }
 
-            $absolute_path = $this->absolut_path($this->url, $src);
+            $absolute_path = $this->absolut_path($this->url, $src);  // this-> url ????
 
             if ($this->url_exists($absolute_path) &&
-                    $this->is_path_valid($absolute_path, True, array('jpg', 'jpe', 'pdf', 'gif', 'png', 'doc'))) {
+                    $this->is_path_valid($absolute_path, True, array('jpg', 'jpe', 'pdf', 'gif', 'png', 'doc'))) { /// ???
                 array_push($result_urls, $absolute_path);
             }
+            // ??? nochmal verstehen
         }
 
         return $result_urls;
@@ -154,17 +157,20 @@ class website_test {
     }
 
     public function read_site($rek_deep = 1) {
+        //$rek_deep=0 inklusive alle unterseiten der Homepage
+        //$rek_deep=1 iklusive aller unterseiten der unterseiten
+        // ...
         $urls = array($this->url);
         $it = 0;
         $end_run = 0;
-        $loop_conter = 0; // TODO
+        $loop_counter = 0; // TODO
         while ($it <= $end_run) {
             if(array_key_exists($it, $urls)) {
                 $urls = $this->merge_arrays($urls, $this->get_links($urls[$it]));
             }
-            if($it == $end_run && $loop_conter < $rek_deep) {
+            if($it == $end_run && $loop_counter < $rek_deep) {
                 $end_run = max(array_keys($urls));
-                $loop_conter++;
+                $loop_counter++;
             }
 
             $it++;

@@ -10,8 +10,8 @@ ini_set('display_errors', 1);
  */
 class db {
 
-    private $db;
-    private $sh;
+    private $db;    //database
+    private $sh;    //sessionhandler
     private $statics;
     private $print_failure;
 
