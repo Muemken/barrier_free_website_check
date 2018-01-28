@@ -157,16 +157,38 @@ class website_test {
     }
 
     public function read_site($rek_deep = 1) {
+        $urls = $this->get_link_urls( $rek_deep );
+        $pictures = $this->get_picture_urls($urls);
+
+        $this->db->add_urls_to_db($urls);
+        $this->db->add_pictures_to_db($pictures);
+
+        $this->sh->set_state('testside');
+    }
+
+    public function get_picture_urls( $urls ) {
+        $pictures = array();
+        foreach ($urls as $url) {
+            $found_pictures_for_url = $this->get_pictures($url);
+            $pictures = $this->merge_arrays($pictures, $found_pictures_for_url);
+        }
+
+        return $pictures;
+    }
+
+
+    public function get_link_urls( $rek_deep ) {
         //$rek_deep=0 inklusive alle unterseiten der Homepage
-        //$rek_deep=1 iklusive aller unterseiten der unterseiten
+        //$rek_deep=1 inklusive aller unterseiten der unterseiten
         // ...
         $urls = array($this->url);
         $it = 0;
-        $end_run = 0;
+        $end_run = 0;  // anzahl der unterschiedlichen pfade in der letzten rekursionstiefe
         $loop_counter = 0; // TODO
         while ($it <= $end_run) {
             if(array_key_exists($it, $urls)) {
-                $urls = $this->merge_arrays($urls, $this->get_links($urls[$it]));
+                $new_found_links = $this->get_links($urls[$it]);
+                $urls = $this->merge_arrays($urls, $new_found_links);
             }
             if($it == $end_run && $loop_counter < $rek_deep) {
                 $end_run = max(array_keys($urls));
@@ -175,16 +197,7 @@ class website_test {
 
             $it++;
         }
-
-        $pictures = array();
-        foreach ($urls as $url) {
-            $pictures = $this->merge_arrays($pictures, $this->get_pictures($url));
-        }
-
-        $this->db->add_urls_to_db($urls);
-        $this->db->add_pictures_to_db($pictures);
-
-        $this->sh->set_state('testside');
+        return $urls;
     }
 
     public function absolut_path($url, $path) {
@@ -268,6 +281,7 @@ class website_test {
     public function check_picture($it) {
         $picture = $this->db->picture_with_id($it);
         if ($picture == NULL) {
+            // maybe change to an "eval_form"
             $eval = new evaluation($this->db, $this->sh);
             $eval->show_result();
         } else {
