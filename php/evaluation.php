@@ -1,11 +1,13 @@
 <?php
-
+const BARRIER_FREE_PERCENTAGE = 70;
 /**
  * evaluations class with results of test.
  *
  * @author alexander
  */
 class evaluation {
+
+    
 
     var $db;
     var $sh;
@@ -20,13 +22,13 @@ class evaluation {
     function show_result() {
         $evaluation = file_get_contents('html/evaluation.html', TRUE);
 
-        $pattern = array('%length%', '%yes%', '%no%', '%invalid%', '%notag%', '%skip%', 
-            '%yes_p%','%no_p%', '%invalid_p%', '%notag_p%', '%skip_p%',            
+        $pattern = array('%length%', '%yes%', '%no%', '%invalid%', '%notag%', '%skip%',
+            '%yes_p%', '%no_p%', '%invalid_p%', '%notag_p%', '%skip_p%',
             '%yes_s%', '%no_s%', '%invalid_s%', '%notag_s%', '%skip_s%',
             '%result%', '%hidden%', '%pictures_list%');
 
         $result_array = $this->read_results();
-        $result = 'Die Website ist ' . ($result_array[6] > 70 ? '' : 'nicht ') . ' barrierefrei!';
+        $result = 'Die Website ist ' . ($result_array[6] > BARRIER_FREE_PERCENTAGE ? '' : 'nicht ') . ' barrierefrei!';
 
         array_push($result_array, $result);
 

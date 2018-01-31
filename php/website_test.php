@@ -72,7 +72,7 @@ class website_test {
         // maybe better use something like enum or global static array for that
         // this is also better, if one time the language should be switchable ;)
         if ('back' == $ans) {
-            // verringere iterator, falls nicht beim ersten Element 
+            // reduce iterator, if not first element 
             return $it == 0 ? $it : --$it;            
         }
         return ++$it;
@@ -87,7 +87,7 @@ class website_test {
         }
 
         $regex = '/<a(.*)>/';           // TODO find better regex
-        // warum nicht '/<a href="   ????
+        // '/<a href="   reicht nicht, links koennen auch anders aussehen
         $match = NULL;
         preg_match_all($regex, $site_content, $match, PREG_SET_ORDER);
         foreach ($match as $var) {
@@ -102,7 +102,7 @@ class website_test {
                     $this->is_path_valid($absolute_path, True, array('jpg', 'jpe', 'pdf', 'gif', 'png', 'doc'))) { /// ???
                 array_push($result_urls, $absolute_path);
             }
-            // ??? nochmal verstehen
+            // 
         }
 
         return $result_urls;
@@ -112,12 +112,12 @@ class website_test {
     private function get_pictures($url) {
         $site_content = $this->content_of_url($url);
         $pictures = array();
-
         //TODO check if content is valid?
         // PREG_SET_ORDER -> all matches for one occurence per array
         // because of that we can (as long as no cookies should be used, access directly
         // and havent got to go the way [store in array, choose, send]
         $regex = '/<img(.*)>/';
+        $match = NULL;
         preg_match_all($regex, $site_content, $match, PREG_SET_ORDER);
 
         foreach ($match as $var) {
@@ -148,6 +148,8 @@ class website_test {
         if (is_array($array2)) {
             // needed to avoid flaten input array
             $merged = array_map("unserialize", array_unique(array_map("serialize", array_merge($array1, $array2))));
+            //$merged = array_unique(array_merge($array1, $array2)); 
+            // statt array_merge array_merge_recursive
         } else {
             array_push($array1, $array2);
             $merged = array_unique($array1);
@@ -156,7 +158,7 @@ class website_test {
         return $merged;
     }
 
-    public function read_site($rek_deep = 1) {
+    public function read_site($rek_deep = 0) {
         $urls = $this->get_link_urls( $rek_deep );
         $pictures = $this->get_picture_urls($urls);
 
@@ -201,6 +203,8 @@ class website_test {
     }
 
     public function absolut_path($url, $path) {
+        // create abolute path
+        
         // alternative ask starts with http, but i think this way is better, since the 
         // path has to be relativ to url, or absolute
         // regex taken from stackoverflow:
@@ -208,6 +212,7 @@ class website_test {
 //        if (preg_match('~' . preg_quote($url, '~') . '~A', $path) > 0) {
 //            return $path;
 //        }
+        
         if (substr($path, 0, 4) == "www" || substr($path, 0, 4) == "http") {
             return $path;
         }
